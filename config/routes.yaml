@@ -4,8 +4,8 @@ index:
 
 upload:
     path: /upload
-    controller: App\Controller\AppController::upload
+    controller: App\Controller\UploadController::upload
 
 download:
-    path: /download
+    path: /image/download
     controller: App\Controller\AppController::download
