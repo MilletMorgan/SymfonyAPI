@@ -1,3 +1,11 @@
 index:
     path: /
     controller: App\Controller\AppController::index
+
+upload:
+    path: /upload
+    controller: App\Controller\AppController::upload
+
+download:
+    path: /download
+    controller: App\Controller\AppController::download
