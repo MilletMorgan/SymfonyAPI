@@ -7,5 +7,5 @@ upload:
     controller: App\Controller\UploadController::upload
 
 download:
-    path: /image/download
-    controller: App\Controller\AppController::download
+    path: /download
+    controller: App\Controller\DownloadController::download

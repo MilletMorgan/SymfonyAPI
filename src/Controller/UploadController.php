@@ -5,14 +5,14 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Image;
-use App\Form\ImageType;
+use App\Form\UploadType;
 
 class UploadController extends Controller
 {
     public function upload(Request $request)
     {    
         $image = new Image();
-        $form = $this->createForm(ImageType::class, $image);
+        $form = $this->createForm(UploadType::class, $image);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
@@ -20,10 +20,10 @@ class UploadController extends Controller
             $em->persist($image);
             $em->flush($image);
         }
-            return $this->render('Files/upload.html.twig',array(
-                'image' => $image,
-                'form' => $form->CreateView(),
-            ));   
-        
+
+        return $this->render('Files/upload.html.twig',array(
+            'image' => $image,
+            'form' => $form->CreateView(),
+        ));       
     }
 }

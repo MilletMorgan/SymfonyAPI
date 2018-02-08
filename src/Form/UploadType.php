@@ -1,5 +1,4 @@
 <?php
-// src/Form/ProductType.php
 namespace App\Form;
 
 use App\Entity\Image;
@@ -8,15 +7,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
-class ImageType extends AbstractType
+class UploadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            // ...
-            ->add('image', FileType::class, array('label' => 'Image(JPG)'))
-            // ...
-        ;
+            ->add('image', FileType::class, array('label' => 'Image(JPG)'));
     }
 
     public function configureOptions(OptionsResolver $resolver)
