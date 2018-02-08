@@ -20,25 +20,17 @@ class Image
     /**
      * @ORM\Column(type="string")
      *
-     * @Assert\NotBlank(message="Ajouter une image jpg.")
+     * @Assert\NotBlank(message="Ajouter une image jpeg.")
      * @Assert\File(mimeTypes={ "image/jpeg" })
      */
     private $image;
-
-    /**
-     * @ORM\Column(type="string")
-     *
-     * @Assert\NotBlank(message="Télécharger une image jpg.")
-     * @Assert\File(mimeTypes={ "image/jpeg" })
-     */
-    private $file;
 
     public function getId()
     {
         return $this->id;
     }
 
-    public function setId()
+    public function setId($id)
     {
         $this->id = $id;
 
@@ -53,18 +45,6 @@ class Image
     public function setImage($image)
     {
         $this->image = $image;
-
-        return $this;
-    }
-
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    public function setFile($file)
-    {
-        $this->file = $file;
 
         return $this;
     }

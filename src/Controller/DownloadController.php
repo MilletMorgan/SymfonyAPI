@@ -21,15 +21,15 @@ class DownloadController extends Controller
         $form->handleRequest($request);
 
 
-        if($form->isSubmitted()){
+        if ($form->isSubmitted()) {
             $response = new BinaryFileResponse($route . $image);
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
             
             return $response;
         }
         
-        return $this->render('Files/download.html.twig',array(
+        return $this->render('Files/download.html.twig', array(
             'form' => $form->CreateView(),
-        ));  
+        ));
     }
 }

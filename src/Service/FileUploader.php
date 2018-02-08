@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class ImageUpload
+class FileUploader
 {
     private $targetDir;
 
