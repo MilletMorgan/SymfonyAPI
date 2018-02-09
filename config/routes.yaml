@@ -1,15 +1,20 @@
-index:
-    path: /
-    controller: App\Controller\AppController::index
+#index:
+#    path: /
+#    controller: App\Controller\ImageController::index
 
-upload:
-    path: /upload
-    controller: App\Controller\ImageController::upload
+#upload:
+#    path: /upload
+#    controller: App\Controller\ImageController::upload
 
-download:
-    path: /download
-    controller: App\Controller\ImageController::download
+#download:
+#    path: /download
+#    controller: App\Controller\ImageController::download
 
-delete:
-    path: /delete
-    controller: App\Controller\ImageController::delete 
+#delete:
+#    path: /delete
+#    controller: App\Controller\ImageController::delete 
+
+images:
+    type:   rest
+    resource: App\Controller\ImageController
+    
