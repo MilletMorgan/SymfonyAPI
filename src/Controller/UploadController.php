@@ -1,5 +1,5 @@
 <?php
-// src/Controller/ProductController.php
+
 namespace App\Controller;
 
 use App\Entity\Image;
@@ -8,6 +8,8 @@ use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\ORMException;
 
 class UploadController extends Controller
@@ -29,6 +31,8 @@ class UploadController extends Controller
                 $this->getParameter('images_directory'),
                 $fileName
             );
+
+            return $this->redirect($this->generateUrl('download', array('image' => $fileName)));
         }
 
         return $this->render('Files/upload.html.twig', array(

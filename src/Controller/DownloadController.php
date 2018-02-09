@@ -14,7 +14,7 @@ class DownloadController extends Controller
     public function download(Request $request)
     {
         $file= new Image();
-        $image = "8a28219572efc80f1bec29b2e6584eba.jpeg";
+        $image = $_GET['image'];
         $route = "uploads/images/";
 
         $form = $this->createForm(DownloadType::class, $file);
