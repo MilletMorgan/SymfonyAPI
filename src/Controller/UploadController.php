@@ -40,12 +40,4 @@ class UploadController extends Controller
             'form' => $form->CreateView(),
         ));
     }
-
-    /**
-     * @return string
-     */
-    private function generateUniqueFileName()
-    {
-        return md5(uniqid());
-    }
 }
