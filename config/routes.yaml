@@ -1,15 +1,22 @@
-index:
-    path: /
-    controller: App\Controller\AppController::index
+# =====> On commente ces routes
 
-upload:
-    path: /upload
-    controller: App\Controller\ImageController::upload
+#index:
+#    path: /
+#    controller: App\Controller\AppController::index
+#
+#upload:
+#    path: /upload
+#    controller: App\Controller\ImageController::upload
+#
+#download:
+#    path: /download
+#    controller: App\Controller\ImageController::download
+#
+#delete:
+#    path: /delete
+#    controller: App\Controller\ImageController::delete
 
-download:
-    path: /download
-    controller: App\Controller\ImageController::download
-
-delete:
-    path: /delete
-    controller: App\Controller\ImageController::delete 
+# =====> On ajoute FosRest
+images:
+    type:     rest
+    resource: App\Controller\ImageController
