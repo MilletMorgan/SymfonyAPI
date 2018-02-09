@@ -26,8 +26,9 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 
-class ImageController extends Controller
+class ImageController extends FOSRestController
 {
+
     public function deleteAction(int $id, Request $request)
     {
         // $delete = new Image();
