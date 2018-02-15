@@ -13,5 +13,9 @@
             </div>
         </div>
     </div>
+    
+    {% set runtimeConfig = {"thumbnail": {"size": [50, 50] }} %}
+
+    <img src="{{ asset('/relative/path/to/image.jpg') | imagine_filter('my_thumb') }}" />
 {% endblock %}
 

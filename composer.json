@@ -27,7 +27,14 @@
         "symfony/webpack-encore-pack": "*",
         "symfony/yaml": "^4.0",
         "jms/serializer-bundle": "^2.3",
-        "symfony/maker-bundle": "^1.0"
+        "symfony/maker-bundle": "^1.0",
+        "liip/imagine-bundle": "2.0.x-dev",
+        "imagine/imagine": "^0.6.3,<0.7",
+        "symfony/filesystem": "^3.0|^4.0",
+        "symfony/finder": "^3.0|^4.0",
+        "symfony/options-resolver": "^3.0|^4.0",
+        "symfony/templating": "^3.0|^4.0",
+        "symfony/translation": "^3.0|^4.0"
     },
     "require-dev": {
         "symfony/browser-kit": "^4.0",

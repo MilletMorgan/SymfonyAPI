@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Image;
 use App\Form\UploadType;
 use App\Form\DownloadType;
 use App\Form\DeleteType;
@@ -16,6 +15,14 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Post;
 
+use Liip\ImagineBundle\Binary\BinaryInterface;
+use Liip\ImagineBundle\Model\Binary;
+use Liip\ImagineBundle\Imagine\Filter\PostProcessor\PostProcessorInterface;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,11 +37,48 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-
 class ImageController extends FOSRestController
 {
+    const EXECUTABLE_PATH = '/mozjpeg/';
+
+    /**
+     * @param BinaryInterface $binary
+     *
+     * @return BinaryInterface
+     */
+    public function process(BinaryInterface $binary)
+    {
+        if (!in_array(strtolower($binary->getMineType()), array('image/png'))) {
+            return $binary;
+        }
+        
+        if (false === $input = tempnam($path = sys_get_temp_dir(), 'custom')) {
+            throw new \Exception(sprintf('Error created tmp file in "%s".', $path));
+        }
+        
+        file_put_contents($input, $binary->getContent());
+
+        $pb = new ProcessBuilder(array(self::EXECUTABLE_PATH));
+        $pb->add($input);
+
+        $process = $pb->getProcess();
+        $process->run();
+
+        if (0 !== $process->getExitCode()) {
+            unlink($input);
+            throw new ProcessFailedException($process);
+        }
+
+        $result = new Binary(
+            file_get_contents($input),
+            $binary->getMimeType(),
+            $binary->getFormat()
+        );
+
+        unlink($input);
+
+        return $result;
+    }
 
     /**
      * @Post("/images")
@@ -61,7 +105,7 @@ class ImageController extends FOSRestController
      */
     public function downloadAction(Request $request)
     {
-        $route = "uploads/images/";
+        $route = $this->getParameter('images_directory');
         $id = $request->get('id');
 
         $response = new BinaryFileResponse($route . $id);
@@ -75,7 +119,7 @@ class ImageController extends FOSRestController
      */
     public function deleteAction(Request $request)
     {
-        $route = "uploads/images/";
+        $route = $this->getParameter('images_directory');
         $id = $request->get('id');
   
         if (is_file($route . $id)) {
