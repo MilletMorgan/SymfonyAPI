@@ -53,9 +53,9 @@ class ImageController extends FOSRestController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($image);
-            $em->flush($image);
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($image);
+            // $em->flush($image);
 
             $file = $image->getImage();
             $id = md5(uniqid()).'.'.$file->guessExtension();
@@ -67,10 +67,10 @@ class ImageController extends FOSRestController
             return $this->redirect($this->generateUrl('download', array('id' => $id)));
         }
 
-        return $this->render('Files/upload.html.twig', array(
-            'image' => $image,
-            'form' => $form->CreateView(),
-        ));
+        // return $this->render('Files/upload.html.twig', array(
+        //     'image' => $image,
+        //     'form' => $form->CreateView(),
+        // ));
     }
 
     /**
@@ -107,17 +107,15 @@ class ImageController extends FOSRestController
     {
         $route = "uploads/images/";
         $id = $request->get('id');
-        $id = strval(str_replace("id=", "", $id));
   
         if (is_file($route . $id)) {
             unlink($route . $id);
 
             return new Response('TRUE');
-        } else
-            return new Response('FALSE');
+        }
         
         return new Response('FALSE');
-
+        
     //     $delete = new Image();
 
     //     $route = "uploads/images/";
