@@ -84,20 +84,20 @@ class ImageController extends FOSRestController
         $id = $request->get('id');
         $id = strval(str_replace("id=", "", $id));
 
-        $form = $this->createForm(DownloadType::class, $file);
-        $form->handleRequest($request);
+        // $form = $this->createForm(DownloadType::class, $file);
+        // $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            $response = new BinaryFileResponse($route . $id);
-            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-            
-            return $response;
-        }
+        // if ($form->isSubmitted()) {
+        $response = new BinaryFileResponse($route . $id);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        
+        return $response;
+        // }
 
-        return $this->render('Files/download.html.twig', array(
-            'image' => $id,
-            'form' => $form->CreateView(),
-        ));
+        // return $this->render('Files/download.html.twig', array(
+        //     'image' => $id,
+        //     'form' => $form->CreateView(),
+        // ));
     }
 
     /**
