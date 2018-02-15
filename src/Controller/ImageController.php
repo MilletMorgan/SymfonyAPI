@@ -16,6 +16,7 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Post;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Form;
@@ -34,16 +35,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class ImageController extends FOSRestController
 {
-    /**
-     * @Route("/")
-     */
-    public function indexAction()
-    {
-        return $this->render('base.html.twig');
-    }
+    // /**
+    //  * @Route("/")
+    //  */
+    // public function indexAction()
+    // {
+    //     return $this->render('base.html.twig');
+    // }
 
     /**
-     * @Route("/upload")
+     * @Post("/images")
      */
     public function uploadAction(Request $request)
     {
@@ -73,15 +74,15 @@ class ImageController extends FOSRestController
     }
 
     /**
-     * @Get("/download")
-     * @Method({"POST"})
+     * @Get("/images/{id}")
      */
     public function downloadAction(Request $request)
     {
         $file = new Image();
 
         $route = "uploads/images/";
-        $id = $_GET['id'];
+        $id = $request->get('id');
+        $id = strval(str_replace("id=", "", $id));
 
         $form = $this->createForm(DownloadType::class, $file);
         $form->handleRequest($request);
@@ -100,33 +101,45 @@ class ImageController extends FOSRestController
     }
 
     /**
-     * @Get("/delete")
-     * @Method({"POST"})
+     * @Delete("/images/{id}")
      */
     public function deleteAction(Request $request)
     {
-        $delete = new Image();
-
         $route = "uploads/images/";
-        $id = $_GET['id'];
+        $id = $request->get('id');
+        $id = strval(str_replace("id=", "", $id));
+  
+        if (is_file($route . $id)) {
+            unlink($route . $id);
 
-        $form = $this->createForm(DeleteType::class, $delete);
-        $form->handleRequest($request);
+            return new Response('TRUE');
+        } else
+            return new Response('FALSE');
+        
+        return new Response('FALSE');
 
-        if ($form->isSubmitted()) {
-            $files = glob($route . $id);
+    //     $delete = new Image();
+
+    //     $route = "uploads/images/";
+    //     $id = $_GET['id'];
+
+    //     $form = $this->createForm(DeleteType::class, $delete);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted()) {
+    //         $files = glob($route . $id);
             
-            foreach ($files as $file) {
-                if (is_file($file)) {
-                    unlink($file);
-                }
-            }
+    //         foreach ($files as $file) {
+    //             if (is_file($file)) {
+    //                 unlink($file);
+    //             }
+    //         }
 
-            return $this->redirectToRoute('upload');
-        }
+    //         return $this->redirectToRoute('upload');
+    //     }
 
-        return $this->render('Files/delete.html.twig', array(
-            'form' => $form->CreateView()
-        ));
+    //     return $this->render('Files/delete.html.twig', array(
+    //         'form' => $form->CreateView()
+    //     ));
     }
 }
