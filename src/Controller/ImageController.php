@@ -35,28 +35,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class ImageController extends FOSRestController
 {
-    // /**
-    //  * @Route("/")
-    //  */
-    // public function indexAction()
-    // {
-    //     return $this->render('base.html.twig');
-    // }
 
     /**
      * @Post("/images")
      */
     public function uploadAction(Request $request)
     {
-        $image = new Image();
         $form = $this->createForm(UploadType::class, $image);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($image);
-            // $em->flush($image);
-
             $file = $image->getImage();
             $id = md5(uniqid()).'.'.$file->guessExtension();
             $file->move(
@@ -66,11 +54,6 @@ class ImageController extends FOSRestController
 
             return $this->redirect($this->generateUrl('download', array('id' => $id)));
         }
-
-        // return $this->render('Files/upload.html.twig', array(
-        //     'image' => $image,
-        //     'form' => $form->CreateView(),
-        // ));
     }
 
     /**
@@ -78,26 +61,13 @@ class ImageController extends FOSRestController
      */
     public function downloadAction(Request $request)
     {
-        $file = new Image();
-
         $route = "uploads/images/";
         $id = $request->get('id');
-        $id = strval(str_replace("id=", "", $id));
 
-        // $form = $this->createForm(DownloadType::class, $file);
-        // $form->handleRequest($request);
-
-        // if ($form->isSubmitted()) {
         $response = new BinaryFileResponse($route . $id);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         
         return $response;
-        // }
-
-        // return $this->render('Files/download.html.twig', array(
-        //     'image' => $id,
-        //     'form' => $form->CreateView(),
-        // ));
     }
 
     /**
@@ -115,29 +85,5 @@ class ImageController extends FOSRestController
         }
         
         return new Response('FALSE');
-        
-    //     $delete = new Image();
-
-    //     $route = "uploads/images/";
-    //     $id = $_GET['id'];
-
-    //     $form = $this->createForm(DeleteType::class, $delete);
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted()) {
-    //         $files = glob($route . $id);
-            
-    //         foreach ($files as $file) {
-    //             if (is_file($file)) {
-    //                 unlink($file);
-    //             }
-    //         }
-
-    //         return $this->redirectToRoute('upload');
-    //     }
-
-    //     return $this->render('Files/delete.html.twig', array(
-    //         'form' => $form->CreateView()
-    //     ));
     }
 }
