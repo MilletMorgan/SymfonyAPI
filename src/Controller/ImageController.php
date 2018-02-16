@@ -5,8 +5,9 @@ namespace App\Controller;
 use App\Form\UploadType;
 use App\Form\DownloadType;
 use App\Form\DeleteType;
-use App\Service\FileUploader;
 use App\Entity\Image;
+use App\Manager\ImageManager;
+
 
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Mapping\Annotation;
@@ -84,7 +85,7 @@ class ImageController extends FOSRestController
     /**
      * @Post("/images")
      */
-    public function uploadAction(Request $request)
+    public function uploadAction(Request $request, ImageManager $imageManager)
     {
         $image = new Image;
 
@@ -92,14 +93,16 @@ class ImageController extends FOSRestController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $file = $image->getImage();
-            $id = md5(uniqid()).'.'.$file->guessExtension();
-            $file->move(
-                $this->getParameter('images_directory'),
-                $id
-            );
+            $upload = $imageManager->uploadService();
+            return $upload;
+            // $file = $image->getImage();
+            // $id = md5(uniqid()).'.'.$file->guessExtension();
+            // $file->move(
+            //     $this->getParameter('images_directory'),
+            //     $id
+            // );
 
-            return $this->redirect($this->generateUrl('download', array('id' => $id)));
+            // return $this->redirect($this->generateUrl('download', array('id' => $id)));
         }
 
         return new Response('Upload page');
@@ -113,10 +116,13 @@ class ImageController extends FOSRestController
         $route = $this->getParameter('images_directory');
         $id = $request->get('id');
 
-        $response = new BinaryFileResponse($route . $id);
-        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $download = $imageManager->downloadService();
+        return $download;
+
+        // $response = new BinaryFileResponse($route . $id);
+        // $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         
-        return $response;
+        // return $response;
     }
 
     /**
@@ -126,13 +132,16 @@ class ImageController extends FOSRestController
     {
         $route = $this->getParameter('images_directory');
         $id = $request->get('id');
-  
-        if (is_file($route . $id)) {
-            unlink($route . $id);
 
-            return new Response('TRUE');
-        }
+        $delete = $imageManager->deleteService();
+        return $delete;
+  
+        // if (is_file($route . $id)) {
+        //     unlink($route . $id);
+
+        //     return new Response('TRUE');
+        // }
         
-        return new Response('FALSE');
+        // return new Response('FALSE');
     }
 }

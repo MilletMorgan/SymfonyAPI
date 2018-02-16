@@ -2,27 +2,18 @@
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Entity\Image;
 
 class FileUploader
 {
-    private $targetDir;
-
-    public function __construct($targetDir)
+    public function uploadService(UploadedFile $file)
     {
-        $this->targetDir = $targetDir;
-    }
+        $image = new Image;
 
-    public function upload(UploadedFile $file)
-    {
-        $fileName = md5(uniqid()).'.'.$file->guessExtension();
+        $file = $image->getImage();
+        $id = md5(uniqid()).'.'.$file->guessExtension();
+        $file->move($this->getParameter('images_directory'), $id);
 
-        $file->move($this->getTargetDir(), $fileName);
-
-        return $fileName;
-    }
-
-    public function getTargetDir()
-    {
-        return $this->targetDir;
+        return $this->redirect($this->generateUrl('download', array('id' => $id)));
     }
 }
