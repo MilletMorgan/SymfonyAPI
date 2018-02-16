@@ -1,6 +1,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    liip_imagine.mozjpeg.binary: /mozjpeg/cjpeg.exe
     images_directory: '%kernel.project_dir%/public/uploads/images'
     mozjpg_directory: '%kernel.project_dir%/mozjpg'
     locale: 'en'
@@ -39,7 +40,7 @@ services:
     # please note that last definitions always *replace* previous ones
 
 
-app.post_processor.my_custom_post_processor:
-    class: '../src/ImageController.php'
-    tags:
-        - { name: 'liip_imagine.filter.post_processor', post_processor: 'my_custom_post_processor' }}
+    app.post_processor.my_custom_post_processor:
+        class: '%kernel.project_dir%/src/Controller/ImageController.php'
+        tags:
+            - { name: 'liip_imagine.filter.post_processor', post_processor: 'mozjpeg' }

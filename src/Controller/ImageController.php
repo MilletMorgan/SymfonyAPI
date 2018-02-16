@@ -6,6 +6,7 @@ use App\Form\UploadType;
 use App\Form\DownloadType;
 use App\Form\DeleteType;
 use App\Service\FileUploader;
+use App\Entity\Image;
 
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Mapping\Annotation;
@@ -39,7 +40,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ImageController extends FOSRestController
 {
-    const EXECUTABLE_PATH = '/mozjpeg/';
+    const EXECUTABLE_PATH = 'mozjpeg/cjpeg.exe';
 
     /**
      * @param BinaryInterface $binary
@@ -85,6 +86,8 @@ class ImageController extends FOSRestController
      */
     public function uploadAction(Request $request)
     {
+        $image = new Image;
+
         $form = $this->createForm(UploadType::class, $image);
         $form->handleRequest($request);
 
@@ -98,6 +101,8 @@ class ImageController extends FOSRestController
 
             return $this->redirect($this->generateUrl('download', array('id' => $id)));
         }
+
+        return new Response('Upload page');
     }
 
     /**

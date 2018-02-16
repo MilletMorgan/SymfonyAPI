@@ -39,12 +39,7 @@
 #                    color:    '#fff'
 
 liip_imagine:
-    resolvers:
-        default:
-            web_path: ~
-
     filter_sets:
-        cache: ~
         my_thumb:
             filters:
                 thumbnail: { size: [120, 90], mode: outbound }
