@@ -6,13 +6,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use App\Entity\Image;
-use App\Service\FileUploader;
+use App\Manager\ImageManager;
 
 class ImageUploadListener
 {
     private $uploader;
 
-    public function __construct(ImageUpload $uploader)
+    public function __construct(ImageManager $uploader)
     {
         $this->uploader = $uploader;
     }
@@ -45,7 +45,7 @@ class ImageUploadListener
             return;
         }
 
-        $fileName = $this->uploader->upload($file);
+        $fileName = $this->uploader->uploadService($file);
         $entity->setImage($fileName);
     }
 }

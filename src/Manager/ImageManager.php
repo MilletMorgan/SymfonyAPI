@@ -2,40 +2,50 @@
 
 namespace App\Manager;
 
-use App\Service\FileUploader;
-use App\Service\FileDownload;
-use App\Service\FileDelete;
+use App\Entity\Image;
 
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImageManager
 {
-    private $fileUploader;
-    private $fileDownload;
-    private $fileDelete;
-
-    public function __construct(FileUploader $fileUploader, FileDownload $fileDownload, FileDelete $fileDelete)
+    public function __construct()
     {
-        $this->FileUploader = $fileUploader;
-        $this->FileDownload = $fileDownload;
-        $this->FileDelete = $fileDelete;
     }
 
     public function uploadService()
     {
-        $uploadService = $this->FileUploader->uploadService();
-        return $uploadService;
+        $image = new Image;
+
+        $file = $image->getImage();
+        $id = md5(uniqid()).'.'.$file->guessExtension();
+        $file->move($this->getParameter('images_directory'), $id);
+
+        return $this->redirect($this->generateUrl('download', array('id' => $id)));
     }
 
-    public function downloadService()
+    public function downloadService($route, $id)
     {
-        $downloadService = $this->FileDownload->downloadService();
-        return $downloadService;
+        if (is_file($route . $id)) {
+            $response = new BinaryFileResponse($route . $id);
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+            
+            return $response;
+        }
+
+        return false;
     }
 
-    public function deleteService()
+    public function deleteService($route, $id)
     {
-        $deleteService = $this->FileUDelete->deleteService();
-        return $deleteService;
+        if (is_file($route . $id)) {
+            unlink($route . $id);
+
+            return true;
+        }
+
+        return false;
     }
 }

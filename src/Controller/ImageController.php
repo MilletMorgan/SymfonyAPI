@@ -94,15 +94,8 @@ class ImageController extends FOSRestController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $upload = $imageManager->uploadService();
-            return $upload;
-            // $file = $image->getImage();
-            // $id = md5(uniqid()).'.'.$file->guessExtension();
-            // $file->move(
-            //     $this->getParameter('images_directory'),
-            //     $id
-            // );
 
-            // return $this->redirect($this->generateUrl('download', array('id' => $id)));
+            return $upload;
         }
 
         return new Response('Upload page');
@@ -111,37 +104,36 @@ class ImageController extends FOSRestController
     /**
      * @Get("/images/{id}")
      */
-    public function downloadAction(Request $request)
+    public function downloadAction(Request $request, ImageManager $imageManager)
     {
         $route = $this->getParameter('images_directory');
         $id = $request->get('id');
 
-        $download = $imageManager->downloadService();
-        return $download;
+        $download = $imageManager->downloadService($route, $id);
 
-        // $response = new BinaryFileResponse($route . $id);
-        // $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-        
-        // return $response;
+        var_dump($route . $id);
+
+        if ($download == false) {
+            return new Response('FALSE');
+        }
+
+        return $download;
     }
 
     /**
      * @Delete("/images/{id}")
      */
-    public function deleteAction(Request $request)
+    public function deleteAction(Request $request, ImageManager $imageManager)
     {
         $route = $this->getParameter('images_directory');
         $id = $request->get('id');
 
-        $delete = $imageManager->deleteService();
-        return $delete;
-  
-        // if (is_file($route . $id)) {
-        //     unlink($route . $id);
+        $delete = $imageManager->deleteService($route, $id);
 
-        //     return new Response('TRUE');
-        // }
-        
-        // return new Response('FALSE');
+        if ($delete == true) {
+            return new RESPONSE('TRUE');
+        }
+
+        return new Response('FALSE');
     }
 }

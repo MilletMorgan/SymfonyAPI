@@ -2,7 +2,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     liip_imagine.mozjpeg.binary: /mozjpeg/cjpeg.exe
-    images_directory: '%kernel.project_dir%/public/uploads/images'
+    images_directory: '%kernel.project_dir%/public/uploads/images/'
     mozjpg_directory: '%kernel.project_dir%/mozjpg'
     locale: 'en'
 
@@ -15,7 +15,7 @@ services:
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
 
-    App\Service\FileUploader:
+    App\Manager\ImageManager:
         arguments:
             $targetDir: '%images_directory%'
 
