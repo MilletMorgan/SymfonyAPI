@@ -14,9 +14,10 @@ class ImageManager extends Controller
 {
     private $targetDir;
 
-    public function __construct($targetDir) 
+    public function __construct(string $targetDir) 
     {
         $this->targetDir = $targetDir;
+        var_dump($targetDir);
     }
 
     public function upload($id)

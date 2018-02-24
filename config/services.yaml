@@ -1,22 +1,21 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    admin_email: manager@example.com
     liip_imagine.mozjpeg.binary: /mozjpeg/cjpeg.exe
     images_directory: '%kernel.project_dir%/public/uploads/images/'
     mozjpg_directory: '%kernel.project_dir%/mozjpg'
     locale: 'en'
 
 services:
-    # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        public: false       # Allows optimizing the container by removing unused services; this also means
-                            # fetching services directly from the container via $container->get() won't work.
-                            # The best practice is to be explicit about your dependencies anyway.
+        autowire: false
+        autoconfigure: false
+        public: true
 
     App\Manager\ImageManager:
-        arguments: ['%images_directory%']
+        arguments:
+            $targetDir: '%images_directory%'
 
     App\EventListener\ImageUploadListener:
         tags:
