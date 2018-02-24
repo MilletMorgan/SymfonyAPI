@@ -12,26 +12,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class ImageManager extends Controller
 {
+    private $targetDir;
+
     public function __construct($targetDir) 
     {
-        var_dump($targetDir);exit;
+        $this->targetDir = $targetDir;
     }
 
-    public function upload($route, $id)
+    public function upload($id)
     {
         $image = new Image;
 
         $file = $image->getImage();
         $id = md5(uniqid()).'.'.$file->guessExtension();
-        $file->move($route, $id);
+        $file->move($this->targetDir, $id);
 
         return $this->redirect($this->generateUrl('download', array('id' => $id)));
     }
 
-    public function download($route, $id)
+    public function download($id)
     {        
-        if (is_file($route . $id)) {
-            $response = new BinaryFileResponse($route . $id);
+        if (is_file($this->targetDir . $id)) {
+            $response = new BinaryFileResponse($this->targetDir . $id);
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
             
             return $response;
@@ -40,10 +42,10 @@ class ImageManager extends Controller
         return false;
     }
 
-    public function delete($route, $id)
+    public function delete($id)
     {
-        if (is_file($route . $id)) {
-            unlink($route . $id);
+        if (is_file($this->targetDir . $id)) {
+            unlink($this->targetDir . $id);
             return true;
         }
 

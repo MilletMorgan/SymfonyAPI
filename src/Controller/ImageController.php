@@ -78,8 +78,9 @@ class ImageController extends FOSRestController
     /**
      * @Post("/images")
      */
-    public function uploadAction(Request $request, ImageManager $imageManager)
+    public function uploadAction(Request $request)
     {
+        $imageManager = $this->container->get(ImageManager::class);
         $image = new Image;
         
         $id = $request->get('id');
@@ -89,7 +90,7 @@ class ImageController extends FOSRestController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $upload = $imageManager->upload($route, $id);
+            $upload = $imageManager->upload($id);
 
             return $upload;
         }
@@ -100,12 +101,12 @@ class ImageController extends FOSRestController
     /**
      * @Get("/images/{id}")
      */
-    public function downloadAction(Request $request, ImageManager $imageManager)
+    public function downloadAction(Request $request)
     {
+        $imageManager = $this->container->get(ImageManager::class);
         $id = $request->get('id');
-        $route = $this->getParameter('images_directory');
 
-        $download = $imageManager->download($route, $id);
+        $download = $imageManager->download($id);
 
         if ($download == false) {
             return new Response('FALSE');
@@ -117,12 +118,12 @@ class ImageController extends FOSRestController
     /**
      * @Delete("/images/{id}")
      */
-    public function deleteAction(Request $request, ImageManager $imageManager)
+    public function deleteAction(Request $request)
     {
+        $imageManager = $this->container->get(ImageManager::class);
         $id = $request->get('id');
-        $route = $this->getParameter('images_directory');
 
-        $delete = $imageManager->delete($route, $id);
+        $delete = $imageManager->delete($id);
 
         if ($delete == true) {
             return new RESPONSE('TRUE');
