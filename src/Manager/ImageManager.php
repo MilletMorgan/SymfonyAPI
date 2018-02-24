@@ -8,26 +8,28 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class ImageManager
+class ImageManager extends Controller
 {
-    public function __construct()
+    public function __construct($targetDir) 
     {
+        var_dump($targetDir);exit;
     }
 
-    public function uploadService()
+    public function upload($route, $id)
     {
         $image = new Image;
 
         $file = $image->getImage();
         $id = md5(uniqid()).'.'.$file->guessExtension();
-        $file->move($this->getParameter('images_directory'), $id);
+        $file->move($route, $id);
 
         return $this->redirect($this->generateUrl('download', array('id' => $id)));
     }
 
-    public function downloadService($route, $id)
-    {
+    public function download($route, $id)
+    {        
         if (is_file($route . $id)) {
             $response = new BinaryFileResponse($route . $id);
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
@@ -38,11 +40,10 @@ class ImageManager
         return false;
     }
 
-    public function deleteService($route, $id)
+    public function delete($route, $id)
     {
         if (is_file($route . $id)) {
             unlink($route . $id);
-
             return true;
         }
 

@@ -8,7 +8,6 @@ use App\Form\DeleteType;
 use App\Entity\Image;
 use App\Manager\ImageManager;
 
-
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Mapping\Annotation;
 
@@ -32,12 +31,6 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ImageController extends FOSRestController
 {
@@ -88,12 +81,15 @@ class ImageController extends FOSRestController
     public function uploadAction(Request $request, ImageManager $imageManager)
     {
         $image = new Image;
+        
+        $id = $request->get('id');
+        $route = $this->getParameter('images_directory');
 
         $form = $this->createForm(UploadType::class, $image);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $upload = $imageManager->uploadService();
+            $upload = $imageManager->upload($route, $id);
 
             return $upload;
         }
@@ -106,12 +102,10 @@ class ImageController extends FOSRestController
      */
     public function downloadAction(Request $request, ImageManager $imageManager)
     {
-        $route = $this->getParameter('images_directory');
         $id = $request->get('id');
+        $route = $this->getParameter('images_directory');
 
-        $download = $imageManager->downloadService($route, $id);
-
-        var_dump($route . $id);
+        $download = $imageManager->download($route, $id);
 
         if ($download == false) {
             return new Response('FALSE');
@@ -125,10 +119,10 @@ class ImageController extends FOSRestController
      */
     public function deleteAction(Request $request, ImageManager $imageManager)
     {
-        $route = $this->getParameter('images_directory');
         $id = $request->get('id');
+        $route = $this->getParameter('images_directory');
 
-        $delete = $imageManager->deleteService($route, $id);
+        $delete = $imageManager->delete($route, $id);
 
         if ($delete == true) {
             return new RESPONSE('TRUE');
