@@ -16,7 +16,7 @@ services:
                             # The best practice is to be explicit about your dependencies anyway.
 
     App\Manager\ImageManager:
-            arguments: ['%images_directory%']
+        arguments: ['%images_directory%']
 
     App\EventListener\ImageUploadListener:
         tags:
