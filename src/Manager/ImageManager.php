@@ -12,13 +12,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class ImageManager extends Controller
 {
-    private $targetDir;
+    // private $targetDir;
 
-    public function __construct(string $targetDir) 
-    {
-        $this->targetDir = $targetDir;
-        var_dump($targetDir);
-    }
+    // public function __construct(string $targetDir) 
+    // {
+    //     $this->targetDir = $targetDir;
+    //     var_dump($targetDir);
+    // }
 
     public function upload($id)
     {
@@ -26,15 +26,15 @@ class ImageManager extends Controller
 
         $file = $image->getImage();
         $id = md5(uniqid()).'.'.$file->guessExtension();
-        $file->move($this->targetDir, $id);
+        $file->move($route, $id);
 
         return $this->redirect($this->generateUrl('download', array('id' => $id)));
     }
 
-    public function download($id)
+    public function download($route, $id)
     {        
-        if (is_file($this->targetDir . $id)) {
-            $response = new BinaryFileResponse($this->targetDir . $id);
+        if (is_file($route . $id)) {
+            $response = new BinaryFileResponse($route . $id);
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
             
             return $response;
@@ -43,10 +43,10 @@ class ImageManager extends Controller
         return false;
     }
 
-    public function delete($id)
+    public function delete($route, $id)
     {
-        if (is_file($this->targetDir . $id)) {
-            unlink($this->targetDir . $id);
+        if (is_file($route . $id)) {
+            unlink($route . $id);
             return true;
         }
 

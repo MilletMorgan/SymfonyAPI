@@ -90,7 +90,7 @@ class ImageController extends FOSRestController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $upload = $imageManager->upload($id);
+            $upload = $imageManager->upload($route, $id);
 
             return $upload;
         }
@@ -105,8 +105,9 @@ class ImageController extends FOSRestController
     {
         $imageManager = $this->container->get(ImageManager::class);
         $id = $request->get('id');
+        $route = $this->getParameter('images_directory');
 
-        $download = $imageManager->download($id);
+        $download = $imageManager->download($route, $id);
 
         if ($download == false) {
             return new Response('FALSE');
@@ -123,7 +124,7 @@ class ImageController extends FOSRestController
         $imageManager = $this->container->get(ImageManager::class);
         $id = $request->get('id');
 
-        $delete = $imageManager->delete($id);
+        $delete = $imageManager->delete($route, $id);
 
         if ($delete == true) {
             return new RESPONSE('TRUE');

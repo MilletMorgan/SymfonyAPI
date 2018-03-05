@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        {% block body %}
+            <h1>Hello World!</h1>
+            <img src="{{ asset('uploads/images/' ~ form.image) }}" height="100px" width="250px">
+        {% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>
