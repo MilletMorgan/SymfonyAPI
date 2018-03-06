@@ -20,15 +20,13 @@ class ImageManager extends Controller
     //     var_dump($targetDir);
     // }
 
-    public function upload($id)
+    public function upload($route, $id, $image)
     {
-        $image = new Image;
-
         $file = $image->getImage();
         $id = md5(uniqid()).'.'.$file->guessExtension();
-        $file->move($route, $id);
-
-        return $this->redirect($this->generateUrl('download', array('id' => $id)));
+        $file->move($route,$id);
+    
+        return $this->redirect($this->generateUrl('download', array('id' => $id)));    
     }
 
     public function download($route, $id)

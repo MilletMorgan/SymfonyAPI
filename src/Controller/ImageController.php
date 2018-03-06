@@ -31,6 +31,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Form\FormView;
 
 class ImageController extends FOSRestController
 {
@@ -77,29 +78,62 @@ class ImageController extends FOSRestController
 
     /**
      * @Post("/images")
+     * @Route("/images")
      */
     public function uploadAction(Request $request)
     {
-        $imageManager = $this->container->get(ImageManager::class);
         $image = new Image;
-        
-        $id = $request->get('id');
-        $route = $this->getParameter('images_directory');
+        $imageManager = $this->container->get(ImageManager::class);
 
         $form = $this->createForm(UploadType::class, $image);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $upload = $imageManager->upload($route, $id);
+        $id = $request->get('id');
+        $route = $this->getParameter('images_directory');
 
-            return $upload;
+        if ($form->isSubmitted() && $form->isValid()) {
+             $file = $image->getImage();
+             $id = md5(uniqid()).'.'.$file->guessExtension();
+             $file->move($route,$id);
+
+             return $this->redirect($this->generateUrl('download', array('id' => $id)));    
         }
 
-        return new Response('Upload page');
+        return $this->render('Files/upload.html.twig', array(
+            'image' => $image,
+            'form' => $form->CreateView(),
+        ));
     }
+
+    // /**
+    //  * @Route("/images")
+    //  * @Post("/images")
+    //  */
+    // public function uploadAction(Request $request)
+    // {
+    //     $image = new Image();
+    //     $imageManager = $this->container->get(ImageManager::class);
+
+    //     $form = $this->createForm(UploadType::class, $image);
+    //     $form->handleRequest($request);
+
+    //     $id = $request->get('id');
+    //     $route = $this->getParameter('images_directory');
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $upload = $imageManager->upload($route, $id, $image);
+
+    //         return $upload;
+    //     }
+    //     return $this->render('Files/upload.html.twig', array(
+    //         'image' => $image,
+    //         'form' => $form->CreateView(),
+    //     ));
+    // }    
 
     /**
      * @Get("/images/{id}")
+     * @Route("/images/{id}")
      */
     public function downloadAction(Request $request)
     {

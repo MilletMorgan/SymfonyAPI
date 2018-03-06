@@ -12,13 +12,16 @@ class ImageManagerTest extends TestCase
 {
     public function testUpload()
     {
-        $route = 'public/uploads/images/';
+        $imageManager = new ImageManager();
+
         $id = 'f3e59fa5067395b05eae6faf97138f8e.jpeg';
 
-        $this->assertFileExists($route.$id);
+        $result = $imageManager->upload($id);
+
+        $this->assertInstanceOf(Image::class, $result);
     }
 
-    public function testDownload()
+    public function testDownloadExists()
     {
         $imageManager = new ImageManager();
 
@@ -26,7 +29,20 @@ class ImageManagerTest extends TestCase
         $id = 'f3e59fa5067395b05eae6faf97138f8e.jpeg';
 
         $result = $imageManager->download($route, $id);
+
         $this->assertInstanceOf(BinaryFileResponse::class, $result);
+    }
+
+    public function testDownloadMissing()
+    {
+        $imageManager = new ImageManager();
+
+        $route = 'tests/Manager/';
+        $id = 'TEST.toto';
+
+        $result = $imageManager->download($route, $id);
+
+        $this->assertFalse($result);
     }
 
     public function testDelete()
