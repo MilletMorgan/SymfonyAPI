@@ -9,9 +9,15 @@ parameters:
 
 services:
     _defaults:
-        autowire: false
-        autoconfigure: false
-        public: true
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
 
     App\Manager\ImageManager:
         arguments:
@@ -20,13 +26,7 @@ services:
     App\EventListener\ImageUploadListener:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
-            - { name: doctrine.event_listener, event: preUpdate } 
-
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
-    App\:
-        resource: '../src/*'
-        exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+            - { name: doctrine.event_listener, event: preUpdate }
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class

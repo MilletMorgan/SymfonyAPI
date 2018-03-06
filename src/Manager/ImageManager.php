@@ -14,25 +14,23 @@ class ImageManager extends Controller
 {
     private $targetDir;
 
-    public function __construct(string $targetDir) 
+    public function __construct(string $targetDir)
     {
         $this->targetDir = $targetDir;
-        var_dump($targetDir);
     }
 
     public function upload($file)
     {
-        $route = $this->getParameter('images_directory');
         $id = md5(uniqid()).'.'.$file->guessExtension();
-        $file->move($route, $id);
+        $file->move($this->targetDir, $id);
 
         return true;
     }
 
-    public function download($route, $id)
+    public function download($id)
     {        
-        if (is_file($route . $id)) {
-            $response = new BinaryFileResponse($route . $id);
+        if (is_file($this->targetDir . $id)) {
+            $response = new BinaryFileResponse($this->targetDir . $id);
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
             
             return $response;
@@ -41,10 +39,10 @@ class ImageManager extends Controller
         return false;
     }
 
-    public function delete($route, $id)
+    public function delete($id)
     {
-        if (is_file($route . $id)) {
-            unlink($route . $id);
+        if (is_file($this->targetDir . $id)) {
+            unlink($this->targetDir . $id);
             return true;
         }
 
