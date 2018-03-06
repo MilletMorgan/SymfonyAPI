@@ -12,21 +12,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class ImageManager extends Controller
 {
-    // private $targetDir;
+    private $targetDir;
 
-    // public function __construct(string $targetDir) 
-    // {
-    //     $this->targetDir = $targetDir;
-    //     var_dump($targetDir);
-    // }
-
-    public function upload($route, $id, $image)
+    public function __construct(string $targetDir) 
     {
-        $file = $image->getImage();
+        $this->targetDir = $targetDir;
+        var_dump($targetDir);
+    }
+
+    public function upload($file)
+    {
+        $route = $this->getParameter('images_directory');
         $id = md5(uniqid()).'.'.$file->guessExtension();
-        $file->move($route,$id);
-    
-        return $this->redirect($this->generateUrl('download', array('id' => $id)));    
+        $file->move($route, $id);
+
+        return true;
     }
 
     public function download($route, $id)
