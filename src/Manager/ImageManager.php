@@ -19,7 +19,7 @@ class ImageManager extends Controller
         $this->targetDir = $targetDir;
     }
 
-    public function upload($file)
+    public function moveUploadedFile($file)
     {
         $id = md5(uniqid()).'.'.$file->guessExtension();
         $file->move($this->targetDir, $id);
@@ -28,7 +28,7 @@ class ImageManager extends Controller
     }
 
     public function download($id)
-    {        
+    {
         if (is_file($this->targetDir . $id)) {
             $response = new BinaryFileResponse($this->targetDir . $id);
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);

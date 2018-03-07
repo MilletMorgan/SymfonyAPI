@@ -12,7 +12,6 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-
 class ImageController extends FOSRestController
 {
     /**
@@ -22,9 +21,12 @@ class ImageController extends FOSRestController
     {
         $file = $request->files->get('image');
 
-        $result = $imageManager->upload($file);
+        $result = $imageManager->moveUploadedFile($file);
 
-        return new Response($result);
+        if ($result == true) {
+            return new Response('true');
+        }
+        return new Response('false');
     }
 
     /**
@@ -36,7 +38,10 @@ class ImageController extends FOSRestController
 
         $result = $imageManager->download($id);
 
-        return new Response($result);
+        if ($result == true) {
+            return new Response('true');
+        }
+        return new Response('false');
     }
 
     /**
@@ -48,6 +53,9 @@ class ImageController extends FOSRestController
 
         $result = $imageManager->delete($id);
 
-        return new Response($result);
+        if ($result == true) {
+            return new Response('true');
+        }
+        return new Response('false');
     }
 }

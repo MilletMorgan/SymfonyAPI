@@ -7,49 +7,63 @@ use App\Manager\ImageManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImageManagerTest extends TestCase
 {
-    public function testUpload()
+    public function testMoveUploadedFile()
     {
-        $imageManager = new ImageManager();
+        $targetDir = 'tests/Manager/';
 
-        $id = 'f3e59fa5067395b05eae6faf97138f8e.jpeg';
+        $imageManager = new ImageManager($targetDir);
 
-        $result = $imageManager->upload($id);
+        $uploadedFileMock = $this->createMock(UploadedFile::class);
 
-        $this->assertInstanceOf(Image::class, $result);
+        $uploadedFileMock->method('guessExtension')->willReturn('.jpg');
+
+        $resultFileMock = $uploadedFileMock->guessExtension();
+
+        $result = $imageManager->moveUploadedFile($uploadedFileMock);
+
+        $this->assertTrue($result);
     }
 
     public function testDownloadExists()
     {
-        $imageManager = new ImageManager();
-
         $route = 'tests/Manager/';
+
+        $imageManager = new ImageManager($route);
+
         $id = 'f3e59fa5067395b05eae6faf97138f8e.jpeg';
 
-        $result = $imageManager->download($route, $id);
+        $result = $imageManager->download($id);
 
         $this->assertInstanceOf(BinaryFileResponse::class, $result);
     }
 
     public function testDownloadMissing()
     {
-        $imageManager = new ImageManager();
+        $route = '/tests/Manager/';
 
-        $route = 'tests/Manager/';
+        $imageManager = new ImageManager($route);
+
         $id = 'TEST.toto';
 
-        $result = $imageManager->download($route, $id);
+        $result = $imageManager->download($id);
 
         $this->assertFalse($result);
     }
 
     public function testDelete()
     {
-        $route = 'public/uploads/images/';
-        $id = 'f3e59fa5067395b05eae6faf97138f8e.jpeg';
+        $route = '/tests/Manager/';
 
-        $this->assertFileExists($route.$id);
+        $imageManager = new ImageManager($route);
+
+        $id = 'TEST.toto';
+
+        $result = $imageManager->delete($id);
+
+        $this->assertFalse($result);
     }
 }
